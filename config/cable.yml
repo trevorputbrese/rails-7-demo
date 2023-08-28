@@ -15,7 +15,7 @@ test:
 
 production:
   adapter: redis
-  url: <%= redis_binding.get("url") %> 
+  url: <%= "redis://default:#{redis_binding.get('password')}@#{redis_binding.get('host')}:#{redis_binding.get('port')}" %>
   channel_prefix: demo_production
   database: <%= redis_binding.get("database") %> 
   host: <%= redis_binding.get("host") %> 

@@ -15,11 +15,11 @@ spec:
        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
        kind: ClassClaim 
        name: postgresql-rails-7-demo
-   - name: reddis-rails-7-demo
+   - name: redis-rails-7-demo
      ref:
        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
        kind: ClassClaim 
-       name: reddis-rails-7-demo
+       name: redis-rails-7-demo
   env:
    - name: SECRET_KEY_BASE
      value: 66347d769731732b443568c9b4528f6078c1a06a0e92106e686c35d6301fdb6f2be5bdb71a8d9dcf9dae7f1b150ebbd0b73730ae8ccbf003dcb703794d8bec2e

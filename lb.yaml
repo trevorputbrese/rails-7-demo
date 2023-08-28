@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-rails-7-demo-zggfm-master-lb
+  namespace: redis-rails-7-demo-zggfm
+  labels:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: redis-rails-7-demo-zggfm-vc57p
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: redis
+    helm.sh/chart: redis-17.8.0
+  annotations:
+    meta.helm.sh/release-name: redis-rails-7-demo-zggfm-vc57p
+    meta.helm.sh/release-namespace: redis-rails-7-demo-zggfm
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: redis-rails-7-demo-zggfm-vc57p
+    app.kubernetes.io/name: redis
+  ports:
+  - name: tcp-redis
+    port: 6379
+    targetPort: redis
+
