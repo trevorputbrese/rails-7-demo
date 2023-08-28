@@ -1,1 +1,1 @@
-web: bundle exec rails db:migrate && bundle exec rails server
+web: rails db:migrate && rails server
