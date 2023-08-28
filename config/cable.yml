@@ -5,7 +5,26 @@ development:
 test:
   adapter: test
 
+<%  
+  require "bindings"
+
+  bindings = Bindings.from_service_binding_root
+  redis_bindings = Bindings.filter(bindings, "redis")
+  redis_binding = redis_bindings[0]
+%>
+
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  url: <%= redis_binding.get("url") %> 
   channel_prefix: demo_production
+  database: <%= redis_binding.get("database") %> 
+  host: <%= redis_binding.get("host") %> 
+  port: <%= redis_binding.get("port") %>
+  username: <%= redis_binding.get("username") %>
+  password: <%= redis_binding.get("password") %>
+
+
+#production:
+#  adapter: redis
+#  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+#  channel_prefix: demo_production
