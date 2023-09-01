@@ -11,17 +11,15 @@ test:
   bindings = Bindings.from_service_binding_root
   redis_bindings = Bindings.filter(bindings, "redis")
   redis_binding = redis_bindings[0]
+  password = redis_binding&.get('password')
+  host = redis_binding&.get('host')
+  port = redis_binding&.get('port')
 %>
 
 production:
   adapter: redis
-  url: <%= "redis://default:#{redis_binding.get('password')}@#{redis_binding.get('host')}:#{redis_binding.get('port')}" %>
+  url: "<%= "redis://default:#{password}@#{host}:#{port}" %>"
   channel_prefix: demo_production
-  database: <%= redis_binding.get("database") %> 
-  host: <%= redis_binding.get("host") %> 
-  port: <%= redis_binding.get("port") %>
-  username: <%= redis_binding.get("username") %>
-  password: <%= redis_binding.get("password") %>
 
 
 #production:
