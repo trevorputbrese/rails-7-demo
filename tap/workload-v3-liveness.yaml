@@ -3,10 +3,16 @@ kind: Workload
 metadata:
   name: immigration-messages
   labels:
-    apps.tanzu.vmware.com/workload-type: web
+    apps.tanzu.vmware.com/workload-type: test
     app.kubernetes.io/part-of: immigration-messages
 spec:
   params:
+  - name: probes
+    value: 
+      livenessProbe: {"httpGet":{"path":"/","port":3000},"initialDelaySeconds":20,"periodSeconds":10}
+      readinessProbe: {"httpGet":{"path":"/","port":3000},"initialDelaySeconds":20,"periodSeconds":10}
+  - name: ports
+    value: {"containerPort": 3000, "port": 80, "name": "http"}
   - name: clusterBuilder
     value: full-jammy
   serviceClaims:
@@ -22,7 +28,10 @@ spec:
        name: redis-rails-7-demo
   env:
    - name: SECRET_KEY_BASE
-     value: 66347d769731732b443568c9b4528f6078c1a06a0e92106e686c35d6301fdb6f2be5bdb71a8d9dcf9dae7f1b150ebbd0b73730ae8ccbf003dcb703794d8bec2e
+     valueFrom:
+       secretKeyRef:
+         name: rails-secret-key-trev-cluster
+         key: SECRET_KEY_BASE
   source:
     git:      
       url: https://github.com/trevorputbrese/rails-7-demo
