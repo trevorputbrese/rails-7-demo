@@ -1,0 +1,5 @@
+site_name: 'USCIS Immigration Messsages Demo'
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core
