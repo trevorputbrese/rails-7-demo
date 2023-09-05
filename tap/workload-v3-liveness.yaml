@@ -3,16 +3,15 @@ kind: Workload
 metadata:
   name: immigration-messages
   labels:
-    apps.tanzu.vmware.com/workload-type: test
+    apps.tanzu.vmware.com/workload-type: web
     app.kubernetes.io/part-of: immigration-messages
+  namespace: global
 spec:
   params:
   - name: probes
     value: 
-      livenessProbe: {"httpGet":{"path":"/","port":3000},"initialDelaySeconds":20,"periodSeconds":10}
-      readinessProbe: {"httpGet":{"path":"/","port":3000},"initialDelaySeconds":20,"periodSeconds":10}
-  - name: ports
-    value: {"containerPort": 3000, "port": 80, "name": "http"}
+      livenessProbe: {"httpGet":{"path":"/","port":8080, "scheme": "HTTP"},"initialDelaySeconds":20,"periodSeconds":10}
+      readinessProbe: {"httpGet":{"path":"/","port":8080, "scheme": "HTTP"},"initialDelaySeconds":20,"periodSeconds":10}
   - name: clusterBuilder
     value: full-jammy
   serviceClaims:
