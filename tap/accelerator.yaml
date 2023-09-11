@@ -9,43 +9,20 @@ accelerator:
   
   # Place this after the 'tags' section from the previous step
   options:
-    - name: Customize your workload yaml 1:
+    - name: workloadYamlcustomization1
       inputType: text
-      defaultValue: "redis-claim-1"
-      label: Redis Service Claim Name:
+      label: Customize your workload yaml 1 for the redis service claim
+      defaultValue: redis-claim-name
       required: true
-    - name: Customize your workload yaml 2:
+    - name: workloadYamlcustomization2
+      inputType: checkbox
+      dataType: boolean
+      label: Include Postgres database instance?
+    - name: workloadYamlCustomization3
       inputType: text
-      defaultValue: "postgres-claim-1"
-      label: Postgres Service Claim Name:
-      required: true
-  imports:
-    - name: tap-workload
+      label: some other customization value
+      defaultValue: Configurable Parameter 2
+      dependsOn:
+        name: secondConfigurableParameterCheckbox
 
-engine:
-  let:
-    - name: backendServiceResourceName
-      expression: '#backendService.toLowerCase()'
-  chain:
-    - applyTo: [ "nginx.conf", "package.json" ]
-      chain:
-        - type: ReplaceText
-          substitutions:
-            - text: "http://backend"
-              with: "'http://' + #backendServiceResourceName"
-
-    - applyTo: [ "README.md", "public/*.html", "public/*.json", "catalog/catalog-info.yaml", "config/workload.yaml" ]
-      chain:
-        - type: ReplaceText
-          substitutions:
-            - text: "react-frontend"
-              with: "#artifactId"
-
-    - merge:
-      - type: InvokeFragment
-        reference: tap-workload
-      - include: [ "**" ]
-      onConflict: UseFirst
-
-    - include: [ "**" ]
-      exclude: [ "tekton/**" ]
+  
