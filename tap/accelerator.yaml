@@ -9,12 +9,12 @@ accelerator:
   
   # Place this after the 'tags' section from the previous step
   options:
-    - name: workloadYamlcustomization1
+    - name: workloadYamlCustomization1
       inputType: text
       label: Customize your workload yaml 1 for the redis service claim
       defaultValue: redis-claim-name
       required: true
-    - name: workloadYamlcustomization2
+    - name: workloadYamlCustomization2
       inputType: checkbox
       dataType: boolean
       label: Include Postgres database instance?
