@@ -4,16 +4,20 @@ metadata:
   name: immigration-messages
   labels:
     apps.tanzu.vmware.com/workload-type: web
-    app.kubernetes.io/part-of: immigration-messages
+    app.kubernetes.io/part-of: immigration
     apps.tanzu.vmware.com/has-tests: "true"
 spec:
   params:
+  - name: probes
+    value: 
+      livenessProbe: {"httpGet":{"path":"/","port":8080, "scheme": "HTTP"},"initialDelaySeconds":20,"periodSeconds":10}
+      readinessProbe: {"httpGet":{"path":"/","port":8080, "scheme": "HTTP"},"initialDelaySeconds":20,"periodSeconds":10}
+  - name: clusterBuilder
+    value: full-jammy
   - name: testing_pipeline_matching_labels
     value:
       apps.tanzu.vmware.com/pipeline: test
       apps.tanzu.vmware.com/language: ruby-rails
-  - name: clusterBuilder
-    value: full-jammy
   serviceClaims:
    - name: postgresql-rails-7-demo
      ref:

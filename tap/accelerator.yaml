@@ -1,0 +1,51 @@
+accelerator:
+  displayName: Immigration Messages App Accelerator
+  description: Accelerator for CIS Immigratin Messages App
+  iconUrl: https://www.ruby-lang.org/images/header-ruby-logo.png
+  tags:
+    - Ruby
+    - Rails
+    - Immigration
+  
+  # Place this after the 'tags' section from the previous step
+  options:
+    - name: name
+      inputType: text
+      defaultValue: "Immigration-Messages"
+      label: Provide a name for your new project
+      required: true
+    - name: backendService
+      inputType: text
+      defaultValue: "customer-profile-backend.namespace"
+      label: Hostname of the backend services app. If backend services are deployed to the same cluster then a local route can be used (e.g. <backend-app>.<namespace>).
+      required: true
+  imports:
+    - name: tap-workload
+
+engine:
+  let:
+    - name: backendServiceResourceName
+      expression: '#backendService.toLowerCase()'
+  chain:
+    - applyTo: [ "nginx.conf", "package.json" ]
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "http://backend"
+              with: "'http://' + #backendServiceResourceName"
+
+    - applyTo: [ "README.md", "public/*.html", "public/*.json", "catalog/catalog-info.yaml", "config/workload.yaml" ]
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "react-frontend"
+              with: "#artifactId"
+
+    - merge:
+      - type: InvokeFragment
+        reference: tap-workload
+      - include: [ "**" ]
+      onConflict: UseFirst
+
+    - include: [ "**" ]
+      exclude: [ "tekton/**" ]
