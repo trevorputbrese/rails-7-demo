@@ -1,6 +1,6 @@
 accelerator:
   displayName: Immigration Messages App Accelerator
-  description: Accelerator for CIS Immigratin Messages App
+  description: Accelerator for CIS Immigration Messages App
   iconUrl: https://www.ruby-lang.org/images/header-ruby-logo.png
   tags:
     - Ruby
@@ -9,11 +9,6 @@ accelerator:
   
   # Place this after the 'tags' section from the previous step
   options:
-    - name: name
-      inputType: text
-      defaultValue: "Immigration-Messages"
-      label: Provide a name for your new project
-      required: true
     - name: backendService
       inputType: text
       defaultValue: "customer-profile-backend.namespace"
