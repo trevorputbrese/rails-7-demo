@@ -9,10 +9,15 @@ accelerator:
   
   # Place this after the 'tags' section from the previous step
   options:
-    - name: backendService
+    - name: Customize your workload yaml 1:
       inputType: text
-      defaultValue: "customer-profile-backend.namespace"
-      label: Hostname of the backend services app. If backend services are deployed to the same cluster then a local route can be used (e.g. <backend-app>.<namespace>).
+      defaultValue: "redis-claim-1"
+      label: Redis Service Claim Name:
+      required: true
+    - name: Customize your workload yaml 2:
+      inputType: text
+      defaultValue: "postgres-claim-1"
+      label: Postgres Service Claim Name:
       required: true
   imports:
     - name: tap-workload
