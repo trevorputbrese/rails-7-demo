@@ -5,7 +5,7 @@ metadata:
   namespace: global
   description: Immigration messages App
   annotations:
-    backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=immigration-messages"
+    backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=immigration"
     backstage.io/techdocs-ref: dir:.
   tags:
    - global
