@@ -4,7 +4,7 @@ WORKLOAD_NAME = 'immigration-messages-iterate'
 
 k8s_custom_deploy(
    WORKLOAD_NAME,
-   apply_cmd="tanzu apps workload apply -f tap/workload.yaml --live-update" +
+   apply_cmd="tanzu apps workload apply -f tap/workload-iterate.yaml --live-update" +
        " --local-path " + LOCAL_PATH +
        " --namespace " + NAMESPACE +
        " --yes >/dev/null" +
