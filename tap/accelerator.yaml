@@ -1,28 +1,412 @@
 accelerator:
-  displayName: Immigration Messages App Accelerator
-  description: Accelerator for CIS Immigration Messages App
-  iconUrl: https://www.ruby-lang.org/images/header-ruby-logo.png
-  tags:
-    - Ruby
-    - Rails
-    - Immigration
-  
-  # Place this after the 'tags' section from the previous step
-  options:
-    - name: workloadYamlCustomization1
-      inputType: text
-      label: Customize your workload yaml 1 for the redis service claim
-      defaultValue: redis-claim-name
-      required: true
-    - name: workloadYamlCustomization2
-      inputType: checkbox
-      dataType: boolean
-      label: Include Postgres database instance?
-    - name: workloadYamlCustomization3
-      inputType: text
-      label: some other customization value
-      defaultValue: Configurable Parameter 2
-      dependsOn:
-        name: secondConfigurableParameterCheckbox
+  displayName: Immigration Messages
+  description: A web service application to host messages for the Immigration Global team.
+tags:
+  - Ruby
+  - Ruby on Rails
+  - sso
+  - sql
+  - messaging
+  - function
+  - reddis
+options:
+  - label: Workload Namespace
+    description:  The namespace where the application services will be deployed.
+    defaultValue: workloads
+    name: workloadNamespace
+    inputType: text
+    dataType: string
+    required: true
+  - label: Service Namespace
+    description:  The namespace where data service instances like RabbitMQ and databases reside (or will reside once created).
+    defaultValue: service-instances
+    name: serviceNamespace
+    inputType: text
+    dataType: string
+    required: true
+  - label: Workload Type
+    description: The application workload type.
+    defaultValue: web
+    name: workloadType
+    inputType: select
+    choices:
+    - value: web
+      text: Web
+    - value: server
+      text: Server  
+    required: true        
+  - label: Gateway Type
+    description: The Gateway Implementation to Use.
+    defaultValue: ossscg
+    name: gatewayType
+    inputType: select
+    choices:
+    - value: ossscg
+      text: OSS Spring Cloud Gateway
+    - value: tapscg
+      text: TAP Spring Cloud Gateway
+  - label: Gateway Service Name
+    description: The name of gateway instance that will route requests.
+    defaultValue: gateway-where-for-dinner
+    name: gatewayName
+    inputType: text
+    dataType: string
+    required: true    
+    dependsOn: 
+      name: gatewayType
+      value: tapscg  
+  - label: Use Curated APIs
+    description: The name of gateway instance that will route requests.
+    defaultValue: false
+    name: useCuratedAPIs
+    inputType: checkbox
+    dataType: boolean
+    required: true    
+    dependsOn: 
+      name: gatewayType
+      value: tapscg                  
+  - label: Message Broker Type
+    description: The message broker implementation that services will connect to.
+    defaultValue: rabbitmq
+    name: msgBrokerType
+    inputType: select
+    choices:
+    - value: rabbitmq
+      text: RabbitMQ
+  - label: Dynamically Provision Message Broker
+    description: "If set to true, the message broker will be dynamically provisioned."
+    defaultValue: false
+    name: dynamicMsgBroker
+    inputType: checkbox
+    dataType: boolean
+    required: true   
+  - label: Message Broker Cluster Instance Class
+    description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the message broker.  You can override this to use other out-of-the-box/custom classes."
+    defaultValue: rabbitmq-unmanaged
+    name: dynamicMsgBrokerClass
+    inputType: text
+    dataType: string
+    required: true   
+    dependsOn: 
+      name: dynamicMsgBroker      
+  - label: Message Broker Name
+    description: The name of the message broker ClassClaim that the application services will connect to.
+    defaultValue: msgbroker-where-for-dinner
+    name: msgbrokerName
+    inputType: text
+    dataType: string
+    required: true
+  - label: Number of RabbitMQ Cluster Nodes
+    description: The number of nodes that will make up the RabbitMQ cluster.  SHOULD be an odd number.
+    defaultValue: 1
+    name: numRabbitMQClusterNodes
+    inputType: text
+    dataType: number
+    required: true
+    dependsOn: 
+      name: msgBrokerType
+      value: rabbitmq    
+  - label: Database Type
+    description: The type of database that services will connect to.
+    inputType: select
+    defaultValue: h2
+    name: dbType
+    choices:
+    - value: mysql
+      text: MySQL
+    - value: h2
+      text: H2 (In Memory DB)
+    required: true
+  - label: Dynamically Provision Database
+    description: "If set to true, the database will be dynamically provisioned."
+    defaultValue: false
+    name: dynamicDatabase
+    inputType: checkbox
+    dataType: boolean
+    required: true
+    dependsOn: 
+      name: dbType
+      value: mysql   
+  - label: Database Cluster Instance Class
+    description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the database.  You can override this to use other out-of-the-box/custom classes."
+    defaultValue: mysql-unmanaged
+    name: dynamicDBClass
+    inputType: text
+    dataType: string
+    required: true   
+    dependsOn: 
+      name: dynamicDatabase        
+  - label: Database Name
+    description: The name of the database ClassClaim that the application services will connect to.
+    defaultValue: db-where-for-dinner
+    name: dbName
+    inputType: text
+    dataType: string
+    required: true
+    dependsOn: 
+      name: dbType
+      value: mysql
+  - label: Cache Type
+    description: The type of cache that services will connect to.
+    inputType: select
+    defaultValue: inmemCache
+    name: cacheType
+    choices:
+    - value: inmemCache
+      text: In Memory
+    - value: redisCache
+      text: Redis
+    required: true
+  - label: Dynamically Provision Cache
+    description: "If set to true, the cache will be dynamically provisioned."
+    defaultValue: false
+    name: dynamicCache
+    inputType: checkbox
+    dataType: boolean
+    required: true   
+    dependsOn: 
+      name: cacheType
+      value: redisCache   
+  - label: Cache Cluster Instance Class
+    description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the cache.  You can override this to use other out-of-the-box/custom classes."
+    defaultValue: redis-unmanaged
+    name: dynamicCacheClass
+    inputType: text
+    dataType: string
+    required: true   
+    dependsOn: 
+      name: dynamicCache       
+  - label: Cache Instance Name
+    description: The name of the cache ClassClaim that the application services will connect to.
+    defaultValue: cache-where-for-dinner
+    name: cacheName
+    inputType: text
+    dataType: string
+    required: true
+    dependsOn: 
+      name: cacheType
+      value: redisCache 
+  - label: Enable Security
+    description: "If set to true, security will enabled on the application and APIs."
+    defaultValue: false
+    name: enableSecurity
+    inputType: checkbox
+    dataType: boolean
+    required: true
+  - label: AppSSO Instance Name
+    description: "The name of the AppSSO instance that the application services will connect to."
+    defaultValue: appsso-where-for-dinner
+    name: appSSOName
+    inputType: text
+    dataType: string
+    required: true
+    dependsOn: 
+      name: enableSecurity         
+  - label: Create Default Dev Account
+    description: "If set to true, you can create a default dev account below.  This should not be used for production use."
+    defaultValue: true
+    name: enableDefaultDevAccount
+    inputType: checkbox
+    dataType: boolean
+    required: true
+    dependsOn: 
+      name: enableSecurity
+  - label: Dev Account Username
+    description: "The username of the dev account"
+    defaultValue: where-for-dinner
+    name: devDefaultAccountUsername
+    inputType: text
+    dataType: string
+    required: false
+    dependsOn: 
+      name: enableDefaultDevAccount
+  - label: Dev Account Password
+    description: "Plain text version of the dev password."
+    defaultValue: "letseat"
+    name: devDefaultAccountPassword
+    inputType: text
+    dataType: string
+    required: false
+    dependsOn: 
+      name: enableDefaultDevAccount
+  - label: Workload URL
+    description: "The URL where the application is published; only applicable when using TAP Spring Cloud Gateway or Server workload types.  Generally 'http<s>://where-for-dinner.<domain name>.  See README for more details."
+    defaultValue: http://where-for-dinner.<UPDATE ME>
+    name: appWorkloadURL
+    inputType: text
+    dataType: string
+    required: true
+  - label: Alternate Workload Implementations
+    description: "When checked, certain workloads will use alternative implementations written in different programming languages demostrating polyglot capabilities"
+    defaultValue: false
+    name: ployglotWorkloads
+    inputType: checkbox
+    dataType: boolean
+    required: true    
+  - name: nativeBuild
+    label: Support native GraalVM builds
+    description: "When checked, compatible SpringBoot workloads will be built into native images"
+    inputType: checkbox
+    dataType: boolean
+    defaultValue: false      
+  imports:
+    - name: tap-workload
+    - name: build-wrapper-maven
 
-  
+engine:
+  let:
+    - name: secureProfile
+      expression:
+        "'secure'"
+    - name: empty
+      expression:
+        "''"        
+  merge:
+  - exclude: 
+      ["**/templates/**", "**/icons/**", "**/.git/**", "**/deployment/**", "**/where-for-dinner-api-gateway/**"]
+  - condition: "#gatewayType == 'ossscg'"
+    include: ["**/where-for-dinner-api-gateway/**"]  
+  - condition: "#gatewayType == 'tapscg'"
+    include: ["**/templates/scgInstance.yaml", "**/templates/scgAppRoute.yaml"]   
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/scgInstance.yaml'
+      rewriteTo: "'config/service-operator/scgInstance.yaml'"  
+    - type: RewritePath
+      regex: 'templates/scgAppRoute.yaml'
+      rewriteTo: "'config/app-operator/scgAppRoute.yaml'"  
+  - condition: "#gatewayType == 'tapscg' && #useCuratedAPIs"
+    include: ["**/templates/scgCuratedAPI.yaml"]   
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/scgCuratedAPI.yaml'
+      rewriteTo: "'config/app-operator/scgCuratedAPI.yaml'"     
+  - condition: "#gatewayType == 'tapscg' && !#useCuratedAPIs"
+    include: ["**/templates/scgServiceRoutes.yaml"]   
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/scgServiceRoutes.yaml'
+      rewriteTo: "'config/app-operator/scgServiceRoutes.yaml'"                
+  - condition: "#gatewayType == 'tapscg' || #workloadType == 'server'"
+    include: ["**/templates/ingress.yaml"]     
+    chain:
+    - type: YTT   
+    - type: RewritePath
+      regex: 'templates/ingress.yaml'
+      rewriteTo: "'config/app-operator/ingress.yaml'" 
+  - include: ["**/templates/workloads.yaml"]
+    chain:
+    - type: YTT
+    - type: RewritePath
+      regex: 'templates/workloads.yaml'
+      rewriteTo: "'config/developer/workloads.yaml'"                  
+    - type: InvokeFragment
+      reference: tap-workload
+  - condition: "#msgBrokerType == 'rabbitmq' && !#dynamicMsgBroker"
+    include: ["**/rmqCluster.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/rmqCluster.yaml'
+      rewriteTo: "'config/service-operator/rmqCluster.yaml'"          
+  - condition: "#dbType == 'mysql' && !#dynamicDatabase"
+    include: ["**/mysqlInstance.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/mysqlInstance.yaml'
+      rewriteTo: "'config/service-operator/mysqlInstance.yaml'"          
+  - condition: "#msgBrokerType == 'rabbitmq'"
+    include: ["**/rmqResourceClaim.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/rmqResourceClaim.yaml'
+      rewriteTo: "'config/app-operator/rmqResourceClaim.yaml'"   
+  - condition: "#dbType == 'mysql'"
+    include: ["**/mysqlResourceClaim.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/mysqlResourceClaim.yaml'
+      rewriteTo: "'config/app-operator/mysqlResourceClaim.yaml'"     
+  - condition:
+      "#enableSecurity"
+    include: ["**/appSSOInstance.yaml", "**/workloadRegistrationResourceClaim.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/appSSOInstance.yaml'
+      rewriteTo: "'config/service-operator/appSSOInstance.yaml'"  
+    - type: RewritePath
+      regex: 'templates/workloadRegistrationResourceClaim.yaml'
+      rewriteTo: "'config/app-operator/workloadRegistrationResourceClaim.yaml'"   
+  - condition:
+      "#enableSecurity"
+    include: ["where-for-dinner-ui/.env"]
+    chain:
+    - type: ReplaceText
+      substitutions:
+        - text: "nonsecure"
+          with: "#secureProfile"           
+  - condition:
+      "#cacheType == 'redisCache' && !#dynamicCache"
+    include: ["**/redisInstance.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/redisInstance.yaml'
+      rewriteTo: "'config/service-operator/redisInstance.yaml'"    
+  - condition:
+      "#cacheType == 'redisCache'"
+    include: ["**/redisResourceClaim.yaml"]
+    chain:
+    - type: YTT  
+    - type: RewritePath
+      regex: 'templates/redisResourceClaim.yaml'
+      rewriteTo: "'config/app-operator/redisResourceClaim.yaml'"  
+  - type: InvokeFragment
+    reference: build-wrapper-maven
+  - include: ["README.md"]      
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'where-for-dinner-search/' + (#folder != null ? #folder : '') + #filename"  
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'where-for-dinner-availability/' + (#folder != null ? #folder : '') + #filename"  
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'where-for-dinner-notify/' + (#folder != null ? #folder : '') + #filename"  
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'where-for-dinner-search-proc/' + (#folder != null ? #folder : '') + #filename"   
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'where-for-dinner-crawler/' + (#folder != null ? #folder : '') + #filename"          
+  - condition: "#gatewayType == 'ossscg'"
+    chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'where-for-dinner-api-gateway/' + (#folder != null ? #folder : '') + #filename" 
+  - condition: "#gatewayType == 'tapscg'" 
+    include: ["pom.xml"]
+    chain:
+    - type: ReplaceText
+      substitutions:
+        - text: "<module>./where-for-dinner-api-gateway</module>"
+          with: "#empty"                   
+  - type: Provenance
