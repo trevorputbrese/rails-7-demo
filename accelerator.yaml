@@ -111,13 +111,13 @@ accelerator:
   - label: Database Type
     description: The type of database that services will connect to.
     inputType: select
-    defaultValue: h2
+    defaultValue: mysql
     name: dbType
     choices:
     - value: mysql
       text: MySQL
-    - value: h2
-      text: H2 (In Memory DB)
+    - value: PostgreSQL
+      text: PostgreSQL 
     required: true
   - label: Dynamically Provision Database
     description: "If set to true, the database will be dynamically provisioned."
