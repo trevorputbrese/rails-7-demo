@@ -1,15 +1,17 @@
 accelerator:
   displayName: Immigration Messages
-  description: A web service application to host messages for the Immigration Global team.
-tags:
+  description: A multi-service Ruby on Rails messages application for the Immigration Global team.
+  iconUrl: https://upload.wikimedia.org/wikipedia/commons/9/9c/Ruby_on_Rails_logo.jpg
+  tags:
   - Ruby
-  - Ruby on Rails
+  - Rails
   - sso
   - sql
   - messaging
   - function
   - reddis
-options:
+
+  options:
   - label: Workload Namespace
     description:  The namespace where the application services will be deployed.
     defaultValue: workloads
