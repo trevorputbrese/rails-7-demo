@@ -68,7 +68,7 @@ accelerator:
       name: gatewayType
       value: tapscg                  
   - label: In Memory Cache Type
-    description: The message broker implementation that services will connect to.
+    description: The Reddis instance implementation that services will connect to.
     defaultValue: reddis
     name: msgBrokerType
     inputType: select
@@ -82,8 +82,8 @@ accelerator:
     inputType: checkbox
     dataType: boolean
     required: true   
-  - label: Message Broker Cluster Instance Class
-    description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the message broker.  You can override this to use other out-of-the-box/custom classes."
+  - label: Reddis Cluster Instance Class
+    description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the Reddis instance.  You can override this to use other out-of-the-box/custom classes."
     defaultValue: rabbitmq-unmanaged
     name: dynamicInMemoryCacheClass
     inputType: text
@@ -91,8 +91,8 @@ accelerator:
     required: true   
     dependsOn: 
       name: dynamicInMemoryCacheBroker      
-  - label: Message Broker Name
-    description: The name of the message broker ClassClaim that the application services will connect to.
+  - label: Reddis Name
+    description: The name of the Reddis instance ClassClaim that the application services will connect to.
     defaultValue: inmemorycache
     name: msgbrokerName
     inputType: text
@@ -238,19 +238,7 @@ accelerator:
     inputType: text
     dataType: string
     required: true
-  - label: Alternate Workload Implementations
-    description: "When checked, certain workloads will use alternative implementations written in different programming languages demostrating polyglot capabilities"
-    defaultValue: false
-    name: ployglotWorkloads
-    inputType: checkbox
-    dataType: boolean
-    required: true    
-  - name: nativeBuild
-    label: Support native GraalVM builds
-    description: "When checked, compatible SpringBoot workloads will be built into native images"
-    inputType: checkbox
-    dataType: boolean
-    defaultValue: false      
+ 
   imports:
     - name: tap-workload
     - name: build-wrapper-maven
