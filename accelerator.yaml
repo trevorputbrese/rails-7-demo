@@ -49,7 +49,7 @@ accelerator:
       text: TAP Spring Cloud Gateway
   - label: Gateway Service Name
     description: The name of gateway instance that will route requests.
-    defaultValue: gateway-where-for-dinner
+    defaultValue: gateway-messages
     name: gatewayName
     inputType: text
     dataType: string
@@ -67,47 +67,47 @@ accelerator:
     dependsOn: 
       name: gatewayType
       value: tapscg                  
-  - label: Message Broker Type
+  - label: In Memory Cache Type
     description: The message broker implementation that services will connect to.
-    defaultValue: rabbitmq
+    defaultValue: reddis
     name: msgBrokerType
     inputType: select
     choices:
-    - value: rabbitmq
-      text: RabbitMQ
-  - label: Dynamically Provision Message Broker
-    description: "If set to true, the message broker will be dynamically provisioned."
+    - value: reddis
+      text: reddis
+  - label: Dynamically Provision In Memory Cahce
+    description: "If set to true, the in-memory cache will be dynamically provisioned."
     defaultValue: false
-    name: dynamicMsgBroker
+    name: dynamicInMemoryCacheBroker
     inputType: checkbox
     dataType: boolean
     required: true   
   - label: Message Broker Cluster Instance Class
     description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the message broker.  You can override this to use other out-of-the-box/custom classes."
     defaultValue: rabbitmq-unmanaged
-    name: dynamicMsgBrokerClass
+    name: dynamicInMemoryCacheClass
     inputType: text
     dataType: string
     required: true   
     dependsOn: 
-      name: dynamicMsgBroker      
+      name: dynamicInMemoryCacheBroker      
   - label: Message Broker Name
     description: The name of the message broker ClassClaim that the application services will connect to.
-    defaultValue: msgbroker-where-for-dinner
+    defaultValue: inmemorycache
     name: msgbrokerName
     inputType: text
     dataType: string
     required: true
-  - label: Number of RabbitMQ Cluster Nodes
+  - label: Number of Reddis Cluster Nodes
     description: The number of nodes that will make up the RabbitMQ cluster.  SHOULD be an odd number.
     defaultValue: 1
-    name: numRabbitMQClusterNodes
+    name: numReddisClusterNodes
     inputType: text
     dataType: number
     required: true
     dependsOn: 
       name: msgBrokerType
-      value: rabbitmq    
+      value: reddis    
   - label: Database Type
     description: The type of database that services will connect to.
     inputType: select
@@ -140,7 +140,7 @@ accelerator:
       name: dynamicDatabase        
   - label: Database Name
     description: The name of the database ClassClaim that the application services will connect to.
-    defaultValue: db-where-for-dinner
+    defaultValue: db-immigration-messages
     name: dbName
     inputType: text
     dataType: string
@@ -180,7 +180,7 @@ accelerator:
       name: dynamicCache       
   - label: Cache Instance Name
     description: The name of the cache ClassClaim that the application services will connect to.
-    defaultValue: cache-where-for-dinner
+    defaultValue: cache-immigration-messages
     name: cacheName
     inputType: text
     dataType: string
@@ -197,7 +197,7 @@ accelerator:
     required: true
   - label: AppSSO Instance Name
     description: "The name of the AppSSO instance that the application services will connect to."
-    defaultValue: appsso-where-for-dinner
+    defaultValue: appsso-immigration-messages
     name: appSSOName
     inputType: text
     dataType: string
@@ -215,7 +215,7 @@ accelerator:
       name: enableSecurity
   - label: Dev Account Username
     description: "The username of the dev account"
-    defaultValue: where-for-dinner
+    defaultValue: immigration-messages
     name: devDefaultAccountUsername
     inputType: text
     dataType: string
@@ -232,8 +232,8 @@ accelerator:
     dependsOn: 
       name: enableDefaultDevAccount
   - label: Workload URL
-    description: "The URL where the application is published; only applicable when using TAP Spring Cloud Gateway or Server workload types.  Generally 'http<s>://where-for-dinner.<domain name>.  See README for more details."
-    defaultValue: http://where-for-dinner.<UPDATE ME>
+    description: "The URL where the application is published; only applicable when using TAP Spring Cloud Gateway or Server workload types.  Generally 'http<s>://immigration-messages.<domain name>.  See README for more details."
+    defaultValue: http://immigration-messages.<UPDATE ME>
     name: appWorkloadURL
     inputType: text
     dataType: string
@@ -265,9 +265,9 @@ engine:
         "''"        
   merge:
   - exclude: 
-      ["**/templates/**", "**/icons/**", "**/.git/**", "**/deployment/**", "**/where-for-dinner-api-gateway/**"]
+      ["**/templates/**", "**/icons/**", "**/.git/**", "**/deployment/**", "**/immigration-messages-api-gateway/**"]
   - condition: "#gatewayType == 'ossscg'"
-    include: ["**/where-for-dinner-api-gateway/**"]  
+    include: ["**/immigration-messages-api-gateway/**"]  
   - condition: "#gatewayType == 'tapscg'"
     include: ["**/templates/scgInstance.yaml", "**/templates/scgAppRoute.yaml"]   
     chain:
@@ -348,7 +348,7 @@ engine:
       rewriteTo: "'config/app-operator/workloadRegistrationResourceClaim.yaml'"   
   - condition:
       "#enableSecurity"
-    include: ["where-for-dinner-ui/.env"]
+    include: ["immigration-messages-ui/.env"]
     chain:
     - type: ReplaceText
       substitutions:
@@ -377,38 +377,38 @@ engine:
     - type: InvokeFragment
       reference: build-wrapper-maven
     - type: RewritePath
-      rewriteTo: "'where-for-dinner-search/' + (#folder != null ? #folder : '') + #filename"  
+      rewriteTo: "'immigration-messages-search/' + (#folder != null ? #folder : '') + #filename"  
   - chain:
     - type: InvokeFragment
       reference: build-wrapper-maven
     - type: RewritePath
-      rewriteTo: "'where-for-dinner-availability/' + (#folder != null ? #folder : '') + #filename"  
+      rewriteTo: "'immigration-messages-availability/' + (#folder != null ? #folder : '') + #filename"  
   - chain:
     - type: InvokeFragment
       reference: build-wrapper-maven
     - type: RewritePath
-      rewriteTo: "'where-for-dinner-notify/' + (#folder != null ? #folder : '') + #filename"  
+      rewriteTo: "'immigration-messages-notify/' + (#folder != null ? #folder : '') + #filename"  
   - chain:
     - type: InvokeFragment
       reference: build-wrapper-maven
     - type: RewritePath
-      rewriteTo: "'where-for-dinner-search-proc/' + (#folder != null ? #folder : '') + #filename"   
+      rewriteTo: "'immigration-messages-search-proc/' + (#folder != null ? #folder : '') + #filename"   
   - chain:
     - type: InvokeFragment
       reference: build-wrapper-maven
     - type: RewritePath
-      rewriteTo: "'where-for-dinner-crawler/' + (#folder != null ? #folder : '') + #filename"          
+      rewriteTo: "'immigration-messages-crawler/' + (#folder != null ? #folder : '') + #filename"          
   - condition: "#gatewayType == 'ossscg'"
     chain:
     - type: InvokeFragment
       reference: build-wrapper-maven
     - type: RewritePath
-      rewriteTo: "'where-for-dinner-api-gateway/' + (#folder != null ? #folder : '') + #filename" 
+      rewriteTo: "'immigration-messages-api-gateway/' + (#folder != null ? #folder : '') + #filename" 
   - condition: "#gatewayType == 'tapscg'" 
     include: ["pom.xml"]
     chain:
     - type: ReplaceText
       substitutions:
-        - text: "<module>./where-for-dinner-api-gateway</module>"
+        - text: "<module>./immigration-messages-api-gateway</module>"
           with: "#empty"                   
   - type: Provenance
