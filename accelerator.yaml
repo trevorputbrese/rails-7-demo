@@ -84,16 +84,16 @@ accelerator:
     required: true   
   - label: Reddis Cluster Instance Class
     description: "The services toolkit ClusterInstanceClass used for dynamic provisioning of the Reddis instance.  You can override this to use other out-of-the-box/custom classes."
-    defaultValue: rabbitmq-unmanaged
+    defaultValue: reddis-unmanaged
     name: dynamicInMemoryCacheClass
     inputType: text
     dataType: string
     required: true   
     dependsOn: 
       name: dynamicInMemoryCacheBroker      
-  - label: Reddis Name
+  - label: Reddis Service Instance Name
     description: The name of the Reddis instance ClassClaim that the application services will connect to.
-    defaultValue: inmemorycache
+    defaultValue: redis-rails-7-demo
     name: msgbrokerName
     inputType: text
     dataType: string

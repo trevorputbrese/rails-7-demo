@@ -1,5 +1,5 @@
 LOCAL_PATH = os.getenv("LOCAL_PATH", default='.')
-NAMESPACE = os.getenv("NAMESPACE", default='global')
+NAMESPACE = os.getenv("NAMESPACE", default='sandbox-1-ns')
 WORKLOAD_NAME = 'immigration-messages-iterate'
 
 k8s_custom_deploy(
@@ -21,4 +21,4 @@ k8s_custom_deploy(
 
 k8s_resource(WORKLOAD_NAME, port_forwards=["8080:8080"],
    extra_pod_selectors=[{'carto.run/workload-name': WORKLOAD_NAME, 'app.kubernetes.io/component': 'run'}])
-allow_k8s_contexts('aks-eus-tap-v1-6-cluster-4')
+allow_k8s_contexts('aks-eus-tap-v1-7-cluster-1')
