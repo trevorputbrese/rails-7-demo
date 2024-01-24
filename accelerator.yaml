@@ -155,9 +155,9 @@ accelerator:
     name: cacheType
     choices:
     - value: inmemCache
-      text: In Memory
+      text: postgres-rails-7-demo
     - value: redisCache
-      text: Redis
+      text: postgres-rails-7-HA
     required: true
   - label: Dynamically Provision Cache
     description: "If set to true, the cache will be dynamically provisioned."
