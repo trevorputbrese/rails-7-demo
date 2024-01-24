@@ -152,13 +152,13 @@ accelerator:
     description: The services toolkit ClusterInstanceClass used for dynamic provisioning of the DB instance. You can override this to use other out-of-the-box/custom classes.
     inputType: text
     defaultValue: postgres-rails-7-demo
-    #name: cacheType
-    #choices:
-    #- value: inmemCache
-    #  text: In Memory
-    #- value: redisCache
-    #  text: Redis
-    #required: true
+    name: cacheType
+    choices:
+    - value: inmemCache
+      text: In Memory
+    - value: redisCache
+      text: Redis
+    required: true
   - label: Dynamically Provision Cache
     description: "If set to true, the cache will be dynamically provisioned."
     defaultValue: false
