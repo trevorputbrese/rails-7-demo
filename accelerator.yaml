@@ -148,10 +148,10 @@ accelerator:
     dependsOn: 
       name: dbType
       value: mysql
-  - label: Cache Type
-    description: The type of cache that services will connect to.
+  - label: Database Service Instance Name
+    description: The services toolkit ClusterInstanceClass used for dynamic provisioning of the DB instance. You can override this to use other out-of-the-box/custom classes.
     inputType: select
-    defaultValue: inmemCache
+    defaultValue: postgres-rails-7-demo
     name: cacheType
     choices:
     - value: inmemCache
